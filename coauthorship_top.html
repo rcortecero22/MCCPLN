@@ -1,0 +1,155 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 750px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": "Rojas-Contreras M.", "label": "Rojas-Contreras M.", "shape": "dot", "title": "107", "value": 10}, {"color": "#97c2fc", "id": "Kiyak Y.S.", "label": "Kiyak Y.S.", "shape": "dot", "title": "91", "value": 7}, {"color": "#97c2fc", "id": "Garc\u00eda-Pe\u00f1alvo F.J.", "label": "Garc\u00eda-Pe\u00f1alvo F.J.", "shape": "dot", "title": "78", "value": 6}, {"color": "#97c2fc", "id": "Ramos-Ruperto L.", "label": "Ramos-Ruperto L.", "shape": "dot", "title": "49", "value": 7}, {"color": "#97c2fc", "id": "Heinemann M.", "label": "Heinemann M.", "shape": "dot", "title": "35", "value": 11}, {"color": "#97c2fc", "id": "Rojo-Bofill L.M.", "label": "Rojo-Bofill L.M.", "shape": "dot", "title": "91", "value": 7}, {"color": "#97c2fc", "id": "Carrasco Picazo J.P.", "label": "Carrasco Picazo J.P.", "shape": "dot", "title": "91", "value": 7}, {"color": "#97c2fc", "id": "P\u00e9rez G.", "label": "P\u00e9rez G.", "shape": "dot", "title": "51", "value": 8}, {"color": "#97c2fc", "id": "Pai S.A.", "label": "Pai S.A.", "shape": "dot", "title": "35", "value": 11}, {"color": "#97c2fc", "id": "Villamizar Carrillo L.", "label": "Villamizar Carrillo L.", "shape": "dot", "title": "107", "value": 8}, {"color": "#97c2fc", "id": "Habibzadeh F.", "label": "Habibzadeh F.", "shape": "dot", "title": "35", "value": 11}, {"color": "#97c2fc", "id": "Acosta Herrer\u00eda D.L.", "label": "Acosta Herrer\u00eda D.L.", "shape": "dot", "title": "9", "value": 6}, {"color": "#97c2fc", "id": "Balanz\u00e1-Mart\u00ednez V.", "label": "Balanz\u00e1-Mart\u00ednez V.", "shape": "dot", "title": "91", "value": 7}, {"color": "#97c2fc", "id": "Santana P\u00e9rez J.L.", "label": "Santana P\u00e9rez J.L.", "shape": "dot", "title": "9", "value": 6}, {"color": "#97c2fc", "id": "Zielinski C.", "label": "Zielinski C.", "shape": "dot", "title": "35", "value": 11}, {"color": "#97c2fc", "id": "Ferris L.E.", "label": "Ferris L.E.", "shape": "dot", "title": "35", "value": 11}, {"color": "#97c2fc", "id": "Puchades R.", "label": "Puchades R.", "shape": "dot", "title": "49", "value": 7}, {"color": "#97c2fc", "id": "Citrome L.", "label": "Citrome L.", "shape": "dot", "title": "35", "value": 11}, {"color": "#97c2fc", "id": "Aguilar Garc\u00eda-Iturrospe E.J.", "label": "Aguilar Garc\u00eda-Iturrospe E.J.", "shape": "dot", "title": "91", "value": 7}, {"color": "#97c2fc", "id": "Lape\u00f1a J.F., Jr.", "label": "Lape\u00f1a J.F., Jr.", "shape": "dot", "title": "35", "value": 11}, {"color": "#97c2fc", "id": "Voight M.", "label": "Voight M.", "shape": "dot", "title": "35", "value": 11}, {"color": "#97c2fc", "id": "Aggarwal R.", "label": "Aggarwal R.", "shape": "dot", "title": "35", "value": 11}, {"color": "#97c2fc", "id": "Giner L.", "label": "Giner L.", "shape": "dot", "title": "91", "value": 7}, {"color": "#97c2fc", "id": "Ing E.", "label": "Ing E.", "shape": "dot", "title": "35", "value": 11}, {"color": "#97c2fc", "id": "Llorens-Largo F.", "label": "Llorens-Largo F.", "shape": "dot", "title": "78", "value": 6}, {"color": "#97c2fc", "id": "Monedero Carrasco L.", "label": "Monedero Carrasco L.", "shape": "dot", "title": "91", "value": 7}, {"color": "#97c2fc", "id": "Alam M.", "label": "Alam M.", "shape": "dot", "title": "35", "value": 11}, {"color": "#97c2fc", "id": "Ribes Jord\u00e1n G.", "label": "Ribes Jord\u00e1n G.", "shape": "dot", "title": "91", "value": 7}, {"color": "#97c2fc", "id": "Winker M.A.", "label": "Winker M.A.", "shape": "dot", "title": "35", "value": 11}, {"color": "#97c2fc", "id": "Bravo B.", "label": "Bravo B.", "shape": "dot", "title": "51", "value": 8}]);
+                  edges = new vis.DataSet([{"from": "Rojas-Contreras M.", "to": "Villamizar Carrillo L.", "value": 2}, {"from": "Kiyak Y.S.", "to": "Rojo-Bofill L.M.", "value": 1}, {"from": "Kiyak Y.S.", "to": "Ribes Jord\u00e1n G.", "value": 1}, {"from": "Kiyak Y.S.", "to": "Monedero Carrasco L.", "value": 1}, {"from": "Kiyak Y.S.", "to": "Carrasco Picazo J.P.", "value": 1}, {"from": "Kiyak Y.S.", "to": "Balanz\u00e1-Mart\u00ednez V.", "value": 1}, {"from": "Kiyak Y.S.", "to": "Giner L.", "value": 1}, {"from": "Kiyak Y.S.", "to": "Aguilar Garc\u00eda-Iturrospe E.J.", "value": 1}, {"from": "Garc\u00eda-Pe\u00f1alvo F.J.", "to": "Llorens-Largo F.", "value": 2}, {"from": "Ramos-Ruperto L.", "to": "Puchades R.", "value": 2}, {"from": "Heinemann M.", "to": "Zielinski C.", "value": 1}, {"from": "Heinemann M.", "to": "Winker M.A.", "value": 1}, {"from": "Heinemann M.", "to": "Aggarwal R.", "value": 1}, {"from": "Heinemann M.", "to": "Ferris L.E.", "value": 1}, {"from": "Heinemann M.", "to": "Lape\u00f1a J.F., Jr.", "value": 1}, {"from": "Heinemann M.", "to": "Pai S.A.", "value": 1}, {"from": "Heinemann M.", "to": "Ing E.", "value": 1}, {"from": "Heinemann M.", "to": "Citrome L.", "value": 1}, {"from": "Heinemann M.", "to": "Alam M.", "value": 1}, {"from": "Heinemann M.", "to": "Voight M.", "value": 1}, {"from": "Heinemann M.", "to": "Habibzadeh F.", "value": 1}, {"from": "Rojo-Bofill L.M.", "to": "Ribes Jord\u00e1n G.", "value": 1}, {"from": "Rojo-Bofill L.M.", "to": "Monedero Carrasco L.", "value": 1}, {"from": "Rojo-Bofill L.M.", "to": "Carrasco Picazo J.P.", "value": 1}, {"from": "Rojo-Bofill L.M.", "to": "Balanz\u00e1-Mart\u00ednez V.", "value": 1}, {"from": "Rojo-Bofill L.M.", "to": "Giner L.", "value": 1}, {"from": "Rojo-Bofill L.M.", "to": "Aguilar Garc\u00eda-Iturrospe E.J.", "value": 1}, {"from": "Carrasco Picazo J.P.", "to": "Ribes Jord\u00e1n G.", "value": 1}, {"from": "Carrasco Picazo J.P.", "to": "Monedero Carrasco L.", "value": 1}, {"from": "Carrasco Picazo J.P.", "to": "Balanz\u00e1-Mart\u00ednez V.", "value": 1}, {"from": "Carrasco Picazo J.P.", "to": "Giner L.", "value": 1}, {"from": "Carrasco Picazo J.P.", "to": "Aguilar Garc\u00eda-Iturrospe E.J.", "value": 1}, {"from": "P\u00e9rez G.", "to": "Bravo B.", "value": 2}, {"from": "Pai S.A.", "to": "Zielinski C.", "value": 1}, {"from": "Pai S.A.", "to": "Winker M.A.", "value": 1}, {"from": "Pai S.A.", "to": "Aggarwal R.", "value": 1}, {"from": "Pai S.A.", "to": "Ferris L.E.", "value": 1}, {"from": "Pai S.A.", "to": "Lape\u00f1a J.F., Jr.", "value": 1}, {"from": "Pai S.A.", "to": "Ing E.", "value": 1}, {"from": "Pai S.A.", "to": "Citrome L.", "value": 1}, {"from": "Pai S.A.", "to": "Alam M.", "value": 1}, {"from": "Pai S.A.", "to": "Voight M.", "value": 1}, {"from": "Pai S.A.", "to": "Habibzadeh F.", "value": 1}, {"from": "Habibzadeh F.", "to": "Zielinski C.", "value": 1}, {"from": "Habibzadeh F.", "to": "Winker M.A.", "value": 1}, {"from": "Habibzadeh F.", "to": "Aggarwal R.", "value": 1}, {"from": "Habibzadeh F.", "to": "Ferris L.E.", "value": 1}, {"from": "Habibzadeh F.", "to": "Lape\u00f1a J.F., Jr.", "value": 1}, {"from": "Habibzadeh F.", "to": "Ing E.", "value": 1}, {"from": "Habibzadeh F.", "to": "Citrome L.", "value": 1}, {"from": "Habibzadeh F.", "to": "Alam M.", "value": 1}, {"from": "Habibzadeh F.", "to": "Voight M.", "value": 1}, {"from": "Acosta Herrer\u00eda D.L.", "to": "Santana P\u00e9rez J.L.", "value": 1}, {"from": "Balanz\u00e1-Mart\u00ednez V.", "to": "Ribes Jord\u00e1n G.", "value": 1}, {"from": "Balanz\u00e1-Mart\u00ednez V.", "to": "Monedero Carrasco L.", "value": 1}, {"from": "Balanz\u00e1-Mart\u00ednez V.", "to": "Giner L.", "value": 1}, {"from": "Balanz\u00e1-Mart\u00ednez V.", "to": "Aguilar Garc\u00eda-Iturrospe E.J.", "value": 1}, {"from": "Zielinski C.", "to": "Winker M.A.", "value": 1}, {"from": "Zielinski C.", "to": "Aggarwal R.", "value": 1}, {"from": "Zielinski C.", "to": "Ferris L.E.", "value": 1}, {"from": "Zielinski C.", "to": "Lape\u00f1a J.F., Jr.", "value": 1}, {"from": "Zielinski C.", "to": "Ing E.", "value": 1}, {"from": "Zielinski C.", "to": "Citrome L.", "value": 1}, {"from": "Zielinski C.", "to": "Alam M.", "value": 1}, {"from": "Zielinski C.", "to": "Voight M.", "value": 1}, {"from": "Ferris L.E.", "to": "Winker M.A.", "value": 1}, {"from": "Ferris L.E.", "to": "Aggarwal R.", "value": 1}, {"from": "Ferris L.E.", "to": "Lape\u00f1a J.F., Jr.", "value": 1}, {"from": "Ferris L.E.", "to": "Ing E.", "value": 1}, {"from": "Ferris L.E.", "to": "Citrome L.", "value": 1}, {"from": "Ferris L.E.", "to": "Alam M.", "value": 1}, {"from": "Ferris L.E.", "to": "Voight M.", "value": 1}, {"from": "Citrome L.", "to": "Winker M.A.", "value": 1}, {"from": "Citrome L.", "to": "Aggarwal R.", "value": 1}, {"from": "Citrome L.", "to": "Lape\u00f1a J.F., Jr.", "value": 1}, {"from": "Citrome L.", "to": "Ing E.", "value": 1}, {"from": "Citrome L.", "to": "Alam M.", "value": 1}, {"from": "Citrome L.", "to": "Voight M.", "value": 1}, {"from": "Aguilar Garc\u00eda-Iturrospe E.J.", "to": "Ribes Jord\u00e1n G.", "value": 1}, {"from": "Aguilar Garc\u00eda-Iturrospe E.J.", "to": "Monedero Carrasco L.", "value": 1}, {"from": "Aguilar Garc\u00eda-Iturrospe E.J.", "to": "Giner L.", "value": 1}, {"from": "Lape\u00f1a J.F., Jr.", "to": "Winker M.A.", "value": 1}, {"from": "Lape\u00f1a J.F., Jr.", "to": "Aggarwal R.", "value": 1}, {"from": "Lape\u00f1a J.F., Jr.", "to": "Ing E.", "value": 1}, {"from": "Lape\u00f1a J.F., Jr.", "to": "Alam M.", "value": 1}, {"from": "Lape\u00f1a J.F., Jr.", "to": "Voight M.", "value": 1}, {"from": "Voight M.", "to": "Winker M.A.", "value": 1}, {"from": "Voight M.", "to": "Aggarwal R.", "value": 1}, {"from": "Voight M.", "to": "Ing E.", "value": 1}, {"from": "Voight M.", "to": "Alam M.", "value": 1}, {"from": "Aggarwal R.", "to": "Winker M.A.", "value": 1}, {"from": "Aggarwal R.", "to": "Ing E.", "value": 1}, {"from": "Aggarwal R.", "to": "Alam M.", "value": 1}, {"from": "Giner L.", "to": "Ribes Jord\u00e1n G.", "value": 1}, {"from": "Giner L.", "to": "Monedero Carrasco L.", "value": 1}, {"from": "Ing E.", "to": "Winker M.A.", "value": 1}, {"from": "Ing E.", "to": "Alam M.", "value": 1}, {"from": "Monedero Carrasco L.", "to": "Ribes Jord\u00e1n G.", "value": 1}, {"from": "Alam M.", "to": "Winker M.A.", "value": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
