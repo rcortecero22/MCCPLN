@@ -207,17 +207,30 @@ Los resultados permiten:
 - Medir dichas estrategias mediante KPIs.
 - Comunicar los hallazgos en un dashboard ejecutivo.
 
+## Dashboard
+
+El dashboard del proyecto se encuentra en:
+
+dashboard.html`
+
+Para visualizarlo, se puede descargar el archivo y abrirlo en un navegador web.
+
 ## Conclusiones
 
 El análisis bibliométrico permitió reconocer patrones de producción científica, autores, fuentes y temas relevantes. El análisis NLP complementó estos hallazgos al identificar señales de sentimiento en los resúmenes, permitiendo conectar el conocimiento académico con una problemática de negocio.
 
 La combinación de bibliometría, NLP, dashboards y KPIs demuestra cómo los datos científicos pueden convertirse en insumos estratégicos para la toma de decisiones organizacionales.
 
+Cordial saludo,
+
+Hago entrega del proyecto final desarrollado en Google Colab y publicado en GitHub. El proyecto contiene el análisis bibliométrico de una base exportada desde Scopus, el procesamiento de resúmenes mediante NLP, el diseño de estrategias, KPIs y una propuesta de dashboard dinámico para la interpretación de resultados.
+
+
+Muchas gracias.
+
 ## Autor
 
-Proyecto desarrollado por:
-
-**rcortecero22**
+Proyecto desarrollado por: RONNY CORTECERO CONTRERAS
 
 Repositorio:
 
