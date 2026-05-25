@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard de Inteligencia Científica — IA Generativa</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0f1117; --card: #1a1d27; --accent: #6c63ff;
+    --green: #00d4aa; --red: #ff6b6b; --yellow: #ffd166;
+    --text: #e2e8f0; --muted: #8892a4; --border: #2d3148;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; min-height: 100vh; }
+
+  header {
+    background: linear-gradient(135deg, #1a1d27 0%, #2d1b69 100%);
+    padding: 24px 32px; border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  header h1 { font-size: 1.4rem; font-weight: 700; color: #fff; }
+  header h1 span { color: var(--accent); }
+  .badge { background: var(--accent); color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+
+  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; padding: 24px 32px 0; }
+  .kpi { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; position: relative; overflow: hidden; }
+  .kpi::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+  .kpi.blue::before { background: var(--accent); }
+  .kpi.green::before { background: var(--green); }
+  .kpi.red::before { background: var(--red); }
+  .kpi.yellow::before { background: var(--yellow); }
+  .kpi-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+  .kpi-value { font-size: 2rem; font-weight: 800; line-height: 1; }
+  .kpi.blue .kpi-value { color: var(--accent); }
+  .kpi.green .kpi-value { color: var(--green); }
+  .kpi.red .kpi-value { color: var(--red); }
+  .kpi.yellow .kpi-value { color: var(--yellow); }
+  .kpi-sub { font-size: 0.75rem; color: var(--muted); margin-top: 6px; }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 20px 32px; }
+  .grid-3 { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; padding: 0 32px 20px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .card h3 { font-size: 0.85rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .card h3 .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .dot-blue { background: var(--accent); }
+  .dot-green { background: var(--green); }
+  .dot-yellow { background: var(--yellow); }
+  .dot-red { background: var(--red); }
+
+  canvas { max-height: 220px; }
+
+  /* LLM Report */
+  .llm-section { padding: 0 32px 32px; }
+  .llm-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+  .llm-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .llm-icon { width: 40px; height: 40px; background: linear-gradient(135deg, var(--accent), #a78bfa); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+  .llm-title { font-size: 1rem; font-weight: 700; }
+  .llm-subtitle { font-size: 0.75rem; color: var(--muted); }
+  .llm-tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  .tab { padding: 6px 16px; border-radius: 20px; font-size: 0.78rem; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--muted); transition: all 0.2s; }
+  .tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .tab:hover:not(.active) { border-color: var(--accent); color: var(--accent); }
+  .report-content { display: none; }
+  .report-content.active { display: block; }
+  .report-text { font-size: 0.88rem; line-height: 1.8; color: #c8d0e0; }
+  .report-text strong { color: var(--accent); }
+  .report-text .highlight { background: rgba(108,99,255,0.12); border-left: 3px solid var(--accent); padding: 10px 14px; border-radius: 0 8px 8px 0; margin: 12px 0; font-style: italic; }
+  .report-text .tag { display: inline-block; background: rgba(0,212,170,0.15); color: var(--green); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; margin: 2px; }
+
+  /* Keyword bars */
+  .kw-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .kw-label { font-size: 0.75rem; color: var(--text); width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .kw-track { flex: 1; background: var(--border); border-radius: 4px; height: 8px; }
+  .kw-fill { height: 8px; border-radius: 4px; background: linear-gradient(90deg, var(--accent), #a78bfa); }
+  .kw-count { font-size: 0.72rem; color: var(--muted); width: 28px; text-align: right; }
+
+  /* Sentiment donut legend */
+  .sent-legend { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+  .sent-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
+  .sent-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .sent-pct { margin-left: auto; font-weight: 700; }
+
+  /* Strategy table */
+  .strat-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .strat-table th { color: var(--muted); text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--border); font-weight: 600; text-transform: uppercase; font-size: 0.7rem; }
+  .strat-table td { padding: 8px 10px; border-bottom: 1px solid rgba(45,49,72,0.5); }
+  .strat-table tr:last-child td { border-bottom: none; }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 600; }
+  .pill-green { background: rgba(0,212,170,0.15); color: var(--green); }
+  .pill-yellow { background: rgba(255,209,102,0.15); color: var(--yellow); }
+  .pill-red { background: rgba(255,107,107,0.15); color: var(--red); }
+
+  @media (max-width: 900px) {
+    .kpi-row, .grid, .grid-3 { grid-template-columns: 1fr 1fr; padding: 16px; }
+    .llm-section { padding: 0 16px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🔬 Dashboard de <span>Inteligencia Científica</span></h1>
+    <div style="font-size:0.78rem;color:var(--muted);margin-top:4px;">Análisis Bibliométrico + NLP · Scopus Export · IA Generativa en Educación</div>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <span class="badge">🤖 Reporte LLM Activo</span>
+    <span style="font-size:0.75rem;color:var(--muted);">Actualizado: Mayo 2026</span>
+  </div>
+</header>
+
+<!-- KPIs -->
+<div class="kpi-row">
+  <div class="kpi blue">
+    <div class="kpi-label">Total Documentos</div>
+    <div class="kpi-value">119</div>
+    <div class="kpi-sub">📅 2023 – 2026 · Scopus</div>
+  </div>
+  <div class="kpi green">
+    <div class="kpi-label">Año Pico de Publicación</div>
+    <div class="kpi-value">2025</div>
+    <div class="kpi-sub">57 artículos · +58% vs 2024</div>
+  </div>
+  <div class="kpi yellow">
+    <div class="kpi-label">Keyword Dominante</div>
+    <div class="kpi-value" style="font-size:1.1rem;padding-top:6px;">Gen. AI</div>
+    <div class="kpi-sub">106 / 119 documentos (89%)</div>
+  </div>
+  <div class="kpi red">
+    <div class="kpi-label">Sentimiento Negativo</div>
+    <div class="kpi-value">13.4%</div>
+    <div class="kpi-sub">⚠️ Barreras: ética, privacidad, costo</div>
+  </div>
+</div>
+
+<!-- Charts Row 1 -->
+<div class="grid">
+  <div class="card">
+    <h3><span class="dot dot-blue"></span>Publicaciones por Año</h3>
+    <canvas id="chartYear"></canvas>
+  </div>
+  <div class="card">
+    <h3><span class="dot dot-green"></span>Análisis de Sentimiento (NLP · VADER)</h3>
+    <div style="display:flex;gap:20px;align-items:center;">
+      <canvas id="chartSent" style="max-width:160px;max-height:160px;"></canvas>
+      <div class="sent-legend">
+        <div class="sent-item"><div class="sent-dot" style="background:#ffd166;"></div>Neutral <span class="sent-pct" style="color:#ffd166;">43.7%</span></div>
+        <div class="sent-item"><div class="sent-dot" style="background:#00d4aa;"></div>Positivo <span class="sent-pct" style="color:#00d4aa;">31.9%</span></div>
+        <div class="sent-item"><div class="sent-dot" style="background:#ff6b6b;"></div>Negativo <span class="sent-pct" style="color:#ff6b6b;">13.4%</span></div>
+        <div class="sent-item"><div class="sent-dot" style="background:#6c63ff;"></div>Mixto <span class="sent-pct" style="color:#6c63ff;">11.0%</span></div>
+        <div style="margin-top:8px;font-size:0.72rem;color:var(--muted);">104 docs analizados<br>sobre problemática de negocio</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Charts Row 2 -->
+<div class="grid-3">
+  <div class="card">
+    <h3><span class="dot dot-yellow"></span>Top 10 Keywords de Autor</h3>
+    <div id="kwBars"></div>
+  </div>
+  <div class="card">
+    <h3><span class="dot dot-red"></span>Top 5 Fuentes</h3>
+    <canvas id="chartSrc"></canvas>
+  </div>
+</div>
+
+<!-- KPI Strategy Table -->
+<div style="padding: 0 32px 20px;">
+  <div class="card">
+    <h3><span class="dot dot-blue"></span>Tablero de KPIs Estratégicos (Paso 10)</h3>
+    <table class="strat-table">
+      <thead>
+        <tr>
+          <th>Pilar Estratégico</th>
+          <th>KPI Principal</th>
+          <th>Meta</th>
+          <th>Estado Actual</th>
+          <th>Prioridad</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>🔒 Privacidad / Seguridad</td>
+          <td>Tasa de Conversión "Trust"</td>
+          <td>> 30% en B2B</td>
+          <td>Por medir</td>
+          <td><span class="pill pill-red">Alta</span></td>
+        </tr>
+        <tr>
+          <td>💰 Costo / Adopción</td>
+          <td>Conversión Trial → Pago</td>
+          <td>> 5%</td>
+          <td>Por medir</td>
+          <td><span class="pill pill-red">Alta</span></td>
+        </tr>
+        <tr>
+          <td>💰 Costo / Adopción</td>
+          <td>Time-to-Value (TTV)</td>
+          <td>< 14 días</td>
+          <td>Por medir</td>
+          <td><span class="pill pill-yellow">Media</span></td>
+        </tr>
+        <tr>
+          <td>🔬 Innovación (R&D)</td>
+          <td>Transferencia Tecnológica</td>
+          <td>2 features/año</td>
+          <td>0 / 2</td>
+          <td><span class="pill pill-yellow">Media</span></td>
+        </tr>
+        <tr>
+          <td>📡 Vigilancia Tecnológica</td>
+          <td>Frescura de Datos (días)</td>
+          <td>< 90 días</td>
+          <td><span style="color:var(--green);">0 días ✓</span></td>
+          <td><span class="pill pill-green">OK</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- LLM Report Section -->
+<div class="llm-section">
+  <div class="llm-card">
+    <div class="llm-header">
+      <div class="llm-icon">🤖</div>
+      <div>
+        <div class="llm-title">Reporte Automático Generado por LLM</div>
+        <div class="llm-subtitle">Interpretación narrativa de los gráficos · Actualizado automáticamente al ejecutar el pipeline</div>
+      </div>
+    </div>
+
+    <div class="llm-tabs">
+      <button class="tab active" onclick="showTab('tendencias')">📈 Tendencias</button>
+      <button class="tab" onclick="showTab('sentimiento')">💬 Sentimiento NLP</button>
+      <button class="tab" onclick="showTab('keywords')">🔑 Keywords</button>
+      <button class="tab" onclick="showTab('estrategia')">🎯 Estrategia</button>
+      <button class="tab" onclick="showTab('recomendaciones')">✅ Recomendaciones</button>
+    </div>
+
+    <div id="tendencias" class="report-content active">
+      <div class="report-text">
+        <p>El análisis temporal del corpus de <strong>119 documentos</strong> extraídos de Scopus revela una <strong>aceleración exponencial</strong> en la producción científica sobre Inteligencia Artificial Generativa aplicada a contextos educativos y organizacionales.</p>
+        <div class="highlight">
+          "El año 2025 concentra el <strong>47.9% del total de publicaciones</strong> (57 artículos), lo que representa un incremento del <strong>+58% respecto a 2024</strong> (36 artículos) y un crecimiento de más de <strong>8x frente a 2023</strong> (7 artículos). Esta tendencia indica que el campo se encuentra en una fase de <strong>maduración acelerada</strong>."
+        </div>
+        <p>La presencia de 19 documentos ya registrados para <strong>2026</strong> (año en curso) sugiere que la producción científica mantendrá o superará el ritmo de 2025, consolidando la IA Generativa como uno de los temas de mayor dinamismo en la literatura académica iberoamericana.</p>
+        <p style="margin-top:10px;"><strong>Implicación estratégica:</strong> El mercado de soluciones basadas en IA Generativa está en su punto de mayor efervescencia investigativa. Las organizaciones que no adopten estas tecnologías en los próximos 12-18 meses corren el riesgo de quedar rezagadas frente a competidores que ya están integrando los hallazgos académicos en sus productos.</p>
+      </div>
+    </div>
+
+    <div id="sentimiento" class="report-content">
+      <div class="report-text">
+        <p>El análisis de sentimiento aplicado mediante <strong>VADER (NLP)</strong> sobre los resúmenes de los documentos relacionados con la problemática de negocio (privacidad, costo, adopción, seguridad) arroja un perfil de sentimiento <strong>predominantemente neutral-positivo</strong>.</p>
+        <div class="highlight">
+          "El <strong>43.7% de los documentos</strong> presenta un tono neutral, lo que es típico del lenguaje académico formal. El <strong>31.9% es positivo</strong>, reflejando propuestas de solución, marcos de implementación exitosa y casos de uso validados. Solo el <strong>13.4% es negativo</strong>, concentrado en barreras éticas, de privacidad y de costo."
+        </div>
+        <p>El <strong>11% de sentimiento mixto</strong> corresponde a artículos que reconocen tanto el potencial transformador de la IA como sus riesgos inherentes, lo cual es una señal de madurez crítica en la comunidad investigadora.</p>
+        <p style="margin-top:10px;"><strong>Implicación estratégica:</strong> El sentimiento positivo dominante indica que la academia ya cuenta con <strong>soluciones probadas</strong> para las barreras identificadas. Esto valida la viabilidad técnica de las estrategias propuestas en el Paso 9 y reduce el riesgo de inversión en I+D.</p>
+        <div style="margin-top:12px;">
+          <span class="tag">privacidad</span><span class="tag">ética</span><span class="tag">adopción</span><span class="tag">costo</span><span class="tag">seguridad</span><span class="tag">regulación</span>
+          <div style="font-size:0.72rem;color:var(--muted);margin-top:6px;">Palabras clave de la problemática detectadas en el corpus filtrado</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="keywords" class="report-content">
+      <div class="report-text">
+        <p>El mapa de palabras clave de autor revela la <strong>estructura conceptual del campo</strong>. El término <strong>"Generative Artificial Intelligence"</strong> aparece en el 89% de los documentos (106/119), confirmando que es el núcleo temático del corpus.</p>
+        <div class="highlight">
+          "Los tres clústeres conceptuales dominantes son: (1) <strong>Tecnología base</strong> — IA Generativa, ChatGPT, LLMs; (2) <strong>Contexto de aplicación</strong> — Educación Superior, Formación Docente, Innovación Educativa; (3) <strong>Dimensión crítica</strong> — Ética, Privacidad de Datos, Integridad Académica."
+        </div>
+        <p>La co-ocurrencia de <strong>"ChatGPT"</strong> (23 docs) y <strong>"Higher Education"</strong> (23 docs) con igual frecuencia sugiere que el sector educativo es el principal laboratorio de adopción de IA Generativa en el corpus analizado.</p>
+        <p style="margin-top:10px;"><strong>Implicación estratégica:</strong> Las organizaciones del sector EdTech tienen una ventana de oportunidad privilegiada. Los términos emergentes como <strong>"Large Language Models"</strong> (4 docs, pero en crecimiento) anticipan la próxima ola de innovación que debe monitorearse en el sistema de alerta temprana.</p>
+      </div>
+    </div>
+
+    <div id="estrategia" class="report-content">
+      <div class="report-text">
+        <p>Cruzando los hallazgos bibliométricos con el análisis de sentimiento, se identifican <strong>4 vectores estratégicos de alto impacto</strong> para organizaciones que operan en el ecosistema de IA Generativa:</p>
+        <div class="highlight">
+          "<strong>Vector 1 — Diferenciación por Confianza:</strong> El 13.4% de sentimiento negativo se concentra en privacidad y ética. Las organizaciones que implementen marcos de 'Privacy by Design' certificables tendrán una ventaja competitiva directa sobre el 86.6% del mercado que aún no lo hace."
+        </div>
+        <div class="highlight">
+          "<strong>Vector 2 — Reducción de Fricción de Adopción:</strong> La literatura positiva sobre adopción (UTAUT, TAM) provee marcos validados para diseñar onboarding y modelos freemium que reduzcan el TTV a menos de 14 días."
+        </div>
+        <div class="highlight">
+          "<strong>Vector 3 — Alianzas con Nodos Clave:</strong> Los autores Codina L., Rojas-Contreras M. y García-Peñalvo F.J. son los más prolíficos del corpus. Establecer convenios con sus instituciones (LACCEI, RIED, Formación Universitaria) abre canales directos de transferencia tecnológica."
+        </div>
+        <div class="highlight">
+          "<strong>Vector 4 — Vigilancia de Términos Emergentes:</strong> 'Large Language Models' y 'Educational Innovation' muestran crecimiento acelerado. Monitorear su evolución trimestral permite anticipar disrupciones de mercado con 6-12 meses de ventaja."
+        </div>
+      </div>
+    </div>
+
+    <div id="recomendaciones" class="report-content">
+      <div class="report-text">
+        <p>Basado en el análisis integral del corpus (bibliometría + NLP + redes), el LLM genera las siguientes <strong>5 recomendaciones ejecutivas priorizadas</strong>:</p>
+        <br>
+        <p><strong style="color:var(--red);">🔴 Prioridad Alta — Inmediata (0-3 meses):</strong></p>
+        <p>1. Implementar un <strong>marco de cumplimiento de privacidad</strong> (GDPR/Ley 1581 Colombia) como diferenciador comercial. El 13.4% de sentimiento negativo en privacidad representa una brecha de mercado explotable.</p>
+        <p>2. Diseñar una <strong>calculadora de ROI</strong> para clientes basada en las métricas de eficiencia documentadas en los 38 artículos con sentimiento positivo del corpus.</p>
+        <br>
+        <p><strong style="color:var(--yellow);">🟡 Prioridad Media — Corto Plazo (3-6 meses):</strong></p>
+        <p>3. Contactar a las <strong>top 3 instituciones</strong> del análisis de co-autoría (LACCEI, RIED, European Public and Social Innovation Review) para explorar convenios de I+D o validación de producto.</p>
+        <p>4. Lanzar un <strong>modelo freemium</strong> con onboarding basado en el modelo UTAUT2, reduciendo el TTV objetivo a <14 días.</p>
+        <br>
+        <p><strong style="color:var(--green);">🟢 Prioridad Baja — Mediano Plazo (6-12 meses):</strong></p>
+        <p>5. Automatizar este pipeline de análisis con <strong>ejecución trimestral</strong> en GitHub Actions para mantener la inteligencia competitiva actualizada y el KPI de "Frescura de Datos" por debajo de 90 días.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// Chart 1: Publications per year
+new Chart(document.getElementById('chartYear'), {
+  type: 'bar',
+  data: {
+    labels: ['2023', '2024', '2025', '2026*'],
+    datasets: [{
+      label: 'Publicaciones',
+      data: [7, 36, 57, 19],
+      backgroundColor: ['rgba(108,99,255,0.5)','rgba(108,99,255,0.6)','rgba(108,99,255,0.9)','rgba(0,212,170,0.6)'],
+      borderColor: ['#6c63ff','#6c63ff','#6c63ff','#00d4aa'],
+      borderWidth: 2, borderRadius: 6
+    }]
+  },
+  options: {
+    responsive: true, plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { color: '#8892a4' }, grid: { color: 'rgba(45,49,72,0.5)' } },
+      y: { ticks: { color: '#8892a4' }, grid: { color: 'rgba(45,49,72,0.5)' }, beginAtZero: true }
+    }
+  }
+});
+
+// Chart 2: Sentiment donut
+new Chart(document.getElementById('chartSent'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Neutral', 'Positivo', 'Negativo', 'Mixto'],
+    datasets: [{
+      data: [52, 38, 16, 13],
+      backgroundColor: ['#ffd166','#00d4aa','#ff6b6b','#6c63ff'],
+      borderWidth: 0, hoverOffset: 6
+    }]
+  },
+  options: {
+    responsive: true, cutout: '68%',
+    plugins: { legend: { display: false } }
+  }
+});
+
+// Chart 3: Top sources
+new Chart(document.getElementById('chartSrc'), {
+  type: 'bar',
+  data: {
+    labels: ['LACCEI', 'EPISIR', 'RIED', 'Rev. Ed. Derecho', 'Form. Univ.'],
+    datasets: [{
+      data: [9, 8, 6, 5, 4],
+      backgroundColor: 'rgba(255,209,102,0.7)',
+      borderColor: '#ffd166', borderWidth: 2, borderRadius: 4
+    }]
+  },
+  options: {
+    indexAxis: 'y', responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { color: '#8892a4' }, grid: { color: 'rgba(45,49,72,0.5)' } },
+      y: { ticks: { color: '#8892a4', font: { size: 10 } }, grid: { display: false } }
+    }
+  }
+});
+
+// Keyword bars
+const kws = [
+  { label: 'Generative Artificial Intelligence', count: 106, max: 106 },
+  { label: 'Artificial Intelligence', count: 26, max: 106 },
+  { label: 'ChatGPT', count: 23, max: 106 },
+  { label: 'Higher Education', count: 23, max: 106 },
+  { label: 'IA Generativa (ES)', count: 9, max: 106 },
+  { label: 'Education', count: 8, max: 106 },
+  { label: 'Ethics', count: 6, max: 106 },
+  { label: 'Teacher Training', count: 6, max: 106 },
+  { label: 'Educational Innovation', count: 6, max: 106 },
+  { label: 'Large Language Models', count: 4, max: 106 },
+];
+const container = document.getElementById('kwBars');
+kws.forEach(k => {
+  const pct = (k.count / k.max * 100).toFixed(1);
+  container.innerHTML += `
+    <div class="kw-bar">
+      <div class="kw-label" title="${k.label}">${k.label}</div>
+      <div class="kw-track"><div class="kw-fill" style="width:${pct}%"></div></div>
+      <div class="kw-count">${k.count}</div>
+    </div>`;
+});
+
+// Tab switching
+function showTab(id) {
+  document.querySelectorAll('.report-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>
