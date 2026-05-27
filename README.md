@@ -1,237 +1,78 @@
-# MCCPLN
-Diseño y construcción de dashboard de inteligencia de negocios 
-# Análisis Bibliométrico y NLP aplicado a una Problemática de Negocio
+# MCCPLN — Dashboard de Inteligencia Científica
+
+Repositorio académico del proyecto **MCCPLN**, orientado al diseño y construcción de un **Dashboard de Inteligencia Científica** con apoyo de analítica bibliométrica, NLP y visualización de datos para la toma de decisiones.
 
 ## Descripción del proyecto
 
-Este proyecto desarrolla un análisis bibliométrico y de procesamiento de lenguaje natural, NLP, a partir de una base de datos exportada desde Scopus. El objetivo principal es identificar tendencias de investigación, autores relevantes, palabras clave dominantes, redes de colaboración y percepciones asociadas a una problemática de negocio mediante análisis de sentimientos.
+Este trabajo integra el análisis de información científica (fuente Scopus) para:
 
-El trabajo integra técnicas de análisis de datos, visualización, bibliometría, NLP y diseño estratégico para convertir información científica en insumos útiles para la toma de decisiones empresariales.
+- Identificar tendencias temporales y temáticas.
+- Resumir patrones de producción científica y eventos relevantes.
+- Visualizar resultados en formato gráfico e interactivo.
+- Consolidar evidencia en un dashboard y documento ejecutivo.
 
-## Objetivo general
+El resultado es un conjunto de artefactos reproducibles (notebooks, visualizaciones, dashboard HTML y documento PDF) conectados directamente desde este README para facilitar revisión académica y trazabilidad del contexto del curso.
 
-Analizar una base bibliográfica obtenida desde Scopus para identificar patrones de conocimiento, tendencias temáticas y oportunidades estratégicas relacionadas con una problemática de negocio.
+## Estructura del repositorio
 
-## Objetivos específicos
+```text
+MCCPLN/
+├── dashboard/
+│   └── Dashboard.html
+├── documentos/
+│   └── Dashboard de Inteligencia Científica — IA Generativa.pdf
+├── notebooks/
+│   ├── cuaderno_final.ipynb
+│   └── Fase_4_Diseño_y_construcción_de_dashboard_de_inteligencia_de_negocios.ipynb
+├── visualizaciones/
+│   ├── Top HECHO por suma de EVENTOS.png
+│   ├── Estimacion de densidad (KDE) de EVENTOS.png
+│   └── Eventos (suma) por VIGENCIA.png
+└── README.md
+```
 
-- Importar y preparar datos bibliográficos en un entorno Jupyter Notebook / Google Colab.
-- Realizar un análisis exploratorio de los documentos científicos.
-- Identificar autores, fuentes, años y palabras clave más relevantes.
-- Construir visualizaciones bibliométricas.
-- Analizar resúmenes mediante NLP para extraer sentimientos asociados a la problemática de negocio.
-- Diseñar estrategias basadas en los hallazgos del análisis.
-- Definir KPIs para evaluar dichas estrategias.
-- Proponer un dashboard dinámico o reporte automático interpretado por un LLM.
+> Nota: el repositorio conserva además otros artefactos de análisis históricos en la raíz (series, reportes y salidas complementarias).
 
-## Fuente de datos
+## Recursos principales vinculados
 
-La base de datos utilizada corresponde a un archivo exportado desde Scopus:
+### Notebooks
 
-- Archivo: `scopus.csv`
-- Tipo de información: documentos académicos
-- Campos principales:
-  - Autores
-  - Título
-  - Año
-  - Fuente
-  - Resumen
-  - Palabras clave
-  - Citas
-  - DOI
-  - Afiliaciones
+- **Notebook final de trabajo**: [cuaderno_final.ipynb](notebooks/cuaderno_final.ipynb)  
+  Contiene el flujo consolidado del análisis y construcción de resultados.
 
-## Herramientas utilizadas
+- **Notebook fase 4 (diseño y construcción de dashboard)**: [Fase_4_Diseño_y_construcción_de_dashboard_de_inteligencia_de_negocios.ipynb](notebooks/Fase_4_Diseño_y_construcción_de_dashboard_de_inteligencia_de_negocios.ipynb)  
+  Desarrolla la fase específica del dashboard de inteligencia de negocios.
 
-- Google Colab
-- Jupyter Notebook
-- Python
-- Pandas
-- NumPy
-- Matplotlib
-- Seaborn
-- Plotly
-- NetworkX
-- VADER Sentiment Analysis
-- GitHub
+### Dashboard interactivo
 
-## Metodología
+- **Versión HTML del dashboard**: [Dashboard.html](dashboard/Dashboard.html)  
+  Archivo navegable con la visualización integrada del proyecto.
 
-El proyecto se desarrolló en varias etapas:
+### Visualizaciones clave
 
-### Paso 1. Recolección de datos
+- **Top HECHO por suma de EVENTOS**: [Top HECHO por suma de EVENTOS.png](<visualizaciones/Top HECHO por suma de EVENTOS.png>)  
+  Comparativa del hecho principal por acumulado de eventos.
 
-Se utilizó una base bibliográfica exportada desde Scopus en formato CSV.
+- **Estimación de densidad (KDE) de EVENTOS**: [Estimacion de densidad (KDE) de EVENTOS.png](<visualizaciones/Estimacion de densidad (KDE) de EVENTOS.png>)  
+  Distribución de eventos y concentración de frecuencia mediante KDE.
 
-### Paso 2. Alistamiento del entorno
+- **Eventos (suma) por VIGENCIA**: [Eventos (suma) por VIGENCIA.png](<visualizaciones/Eventos (suma) por VIGENCIA.png>)  
+  Evolución temporal de la suma de eventos por año de vigencia.
 
-Se configuró el entorno de trabajo en Google Colab y se creó el repositorio en GitHub.
+### Documento ejecutivo
 
-### Paso 3. Importación de librerías
+- **Dashboard de Inteligencia Científica — IA Generativa (PDF)**: [Dashboard de Inteligencia Científica — IA Generativa.pdf](<documentos/Dashboard de Inteligencia Científica — IA Generativa.pdf>)  
+  Documento consolidado para revisión académica y presentación de resultados.
 
-Se importaron librerías de análisis de datos, visualización, redes y NLP.
+## Contexto académico
 
-### Paso 4. Identificación de la problemática de negocio
+Este repositorio corresponde a un proyecto de curso enfocado en:
 
-Se definió una problemática relacionada con la adopción, privacidad, seguridad, costos y oportunidades estratégicas asociadas a las tendencias encontradas en la literatura científica.
-
-### Paso 5. Análisis bibliométrico
-
-Se analizaron publicaciones por año, autores principales, fuentes relevantes, palabras clave y redes de coocurrencia.
-
-### Paso 6. Análisis NLP de resúmenes
-
-Se aplicó análisis de sentimientos a los resúmenes usando VADER para identificar percepciones positivas, negativas y neutrales asociadas a la problemática de negocio.
-
-### Paso 7. Visualización de resultados
-
-Se generaron gráficos y visualizaciones interactivas para interpretar tendencias, frecuencias y relaciones entre conceptos.
-
-### Paso 8. Interpretación de resultados
-
-Se analizaron los gráficos y tablas generadas para extraer conclusiones sobre tendencias científicas, oportunidades de innovación y riesgos estratégicos.
-
-### Paso 9. Diseño de estrategias
-
-Se propusieron estrategias relacionadas con privacidad, adopción, innovación abierta y vigilancia tecnológica.
-
-### Paso 10. Diseño de KPIs
-
-Se definieron indicadores clave de rendimiento para medir la efectividad de las estrategias propuestas.
-
-### Paso 11. Entrega en GitHub
-
-Se publica el notebook final, el archivo README, los datos y los resultados generados en el repositorio.
-
-## Principales análisis realizados
-
-### 1. Análisis de publicaciones por año
-
-Permite identificar la evolución temporal del tema y detectar años de mayor producción científica.
-
-### 2. Análisis de autores
-
-Permite reconocer autores influyentes y posibles referentes académicos o aliados estratégicos.
-
-### 3. Análisis de fuentes
-
-Permite identificar revistas, conferencias o medios donde se concentra la producción científica.
-
-### 4. Análisis de palabras clave
-
-Permite detectar los conceptos dominantes y las tendencias temáticas principales.
-
-### 5. Redes de coautoría
-
-Permiten visualizar relaciones de colaboración entre investigadores.
-
-### 6. Redes de coocurrencia de palabras clave
-
-Permiten identificar conexiones entre temas y posibles clústeres de investigación.
-
-### 7. Análisis de sentimientos
-
-Permite extraer señales positivas, negativas o neutrales en los resúmenes de los documentos analizados.
-
-## Problemática de negocio
-
-A partir del análisis bibliométrico y NLP, se plantea una problemática relacionada con cómo las organizaciones pueden adoptar tecnologías emergentes o enfoques innovadores minimizando barreras como:
-
-- Costos de implementación.
-- Riesgos de privacidad.
-- Seguridad de la información.
-- Dificultades de adopción.
-- Falta de evidencia para la toma de decisiones.
-- Necesidad de vigilancia tecnológica continua.
-
-## Estrategias propuestas
-
-### 1. Trust as a Service
-
-Convertir la privacidad y seguridad en un diferencial competitivo.
-
-### 2. Modelos de adopción y ROI
-
-Reducir la fricción de adopción mediante modelos de prueba, pilotos y medición temprana de retorno.
-
-### 3. Innovación abierta
-
-Aprovechar autores, instituciones y documentos relevantes para identificar oportunidades de colaboración científica o transferencia tecnológica.
-
-### 4. Vigilancia tecnológica
-
-Actualizar periódicamente el análisis bibliométrico y NLP para monitorear nuevas tendencias.
-
-## KPIs propuestos
-
-| Pilar estratégico | KPI | Fórmula / Métrica | Meta sugerida |
-|---|---|---|---|
-| Privacidad y seguridad | Tasa de conversión por confianza | Clientes que compran por seguridad / total clientes nuevos | Mayor al 30% |
-| Privacidad y seguridad | Incidentes de privacidad | Número de incidentes o brechas | 0 incidentes |
-| Costo y adopción | Conversión trial a pago | Usuarios pagos / usuarios trial | Mayor al 5% |
-| Costo y adopción | Time-to-Value | Días hasta primer valor percibido | Menor a 14 días |
-| Innovación abierta | Transferencia tecnológica | Funcionalidades basadas en literatura científica | 2 por año |
-| Vigilancia tecnológica | Actualización de datos | Días desde la última actualización | Menor a 90 días |
-
-## Dashboard dinámico
-
-El proyecto propone un dashboard dinámico que integra:
-
-- KPIs principales.
-- Gráficos de publicaciones por año.
-- Distribución de sentimientos.
-- Principales fuentes.
-- Principales palabras clave.
-- Interpretación automática tipo LLM de los gráficos.
-- Recomendaciones estratégicas.
-
-## Archivos del repositorio
-
-| Archivo / carpeta | Descripción |
-|---|---|
-| `README.md` | Descripción general del proyecto |
-| `scopus.csv` | Base de datos bibliográfica exportada desde Scopus |
-| `notebook_final.ipynb` | Notebook principal del análisis |
-| `outputs/` | Carpeta con gráficos, tablas y dashboard |
-| `requirements.txt` | Librerías necesarias para reproducir el análisis |
-
-## Resultados esperados
-
-Este proyecto permite transformar una base bibliográfica en un sistema de inteligencia de negocio, integrando análisis académico, NLP, visualización y estrategia empresarial.
-
-Los resultados permiten:
-
-- Identificar tendencias científicas relevantes.
-- Detectar oportunidades de innovación.
-- Comprender barreras de adopción.
-- Diseñar estrategias basadas en evidencia.
-- Medir dichas estrategias mediante KPIs.
-- Comunicar los hallazgos en un dashboard ejecutivo.
-
-## Dashboard
-
-El dashboard del proyecto se encuentra en:
-
-dashboard.html`
-
-Para visualizarlo, se puede descargar el archivo y abrirlo en un navegador web.
-
-## Conclusiones
-
-El análisis bibliométrico permitió reconocer patrones de producción científica, autores, fuentes y temas relevantes. El análisis NLP complementó estos hallazgos al identificar señales de sentimiento en los resúmenes, permitiendo conectar el conocimiento académico con una problemática de negocio.
-
-La combinación de bibliometría, NLP, dashboards y KPIs demuestra cómo los datos científicos pueden convertirse en insumos estratégicos para la toma de decisiones organizacionales.
-
-Cordial saludo,
-
-Hago entrega del proyecto final desarrollado en Google Colab y publicado en GitHub. El proyecto contiene el análisis bibliométrico de una base exportada desde Scopus, el procesamiento de resúmenes mediante NLP, el diseño de estrategias, KPIs y una propuesta de dashboard dinámico para la interpretación de resultados.
-
-
-Muchas gracias.
+- Inteligencia científica aplicada a una problemática de negocio.
+- Integración de bibliometría y NLP en un flujo analítico.
+- Traducción de hallazgos técnicos en insumos estratégicos mediante dashboard.
 
 ## Autor
 
-Proyecto desarrollado por: RONNY CORTECERO CONTRERAS
-
-Repositorio:
-
-https://github.com/rcortecero22/MCCPLN
+**Ronny Cortecero Contreras**  
+Repositorio: https://github.com/rcortecero22/MCCPLN
