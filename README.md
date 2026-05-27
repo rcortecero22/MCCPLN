@@ -72,6 +72,19 @@ Este repositorio corresponde a un proyecto de curso enfocado en:
 - Integración de bibliometría y NLP en un flujo analítico.
 - Traducción de hallazgos técnicos en insumos estratégicos mediante dashboard.
 
+## Análisis detallado de todos los archivos
+
+Para la evaluación académica integral del repositorio (contexto, objetivos, metodología, hallazgos, conclusiones y relación entre componentes), consultar:
+
+- **[ANALISIS.md](ANALISIS.md)**
+
+Este documento incluye:
+
+- Inventario completo de archivos versionados.
+- Descripción argumentada de cada artefacto (datos, notebooks, dashboard, visualizaciones, reportes y salidas NLP).
+- Flujo de trabajo técnico y analítico del proyecto.
+- Conclusiones globales y recomendaciones de mejora metodológica.
+
 ## Autor
 
 **Ronny Cortecero Contreras**  
